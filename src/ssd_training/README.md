@@ -143,4 +143,5 @@ We have provided the latest models that are trained from different datasets. To 
 <sup>[1]</sup>We use [`examples/convert_model.ipynb`](https://github.com/weiliu89/caffe/blob/ssd/examples/convert_model.ipynb) to extract a VOC model from a pretrained COCO model.     
 
 [Ref]      
-[1] https://github.com/weiliu89/caffe/tree/ssd     
+[1] https://github.com/weiliu89/caffe/tree/ssd      
+[2] https://github.com/balancap/SSD-Tensorflow     
