@@ -1,0 +1,169 @@
+0.cuda install
+./cuda文件 -extract=/tmp
+./cuda-l补全 accept
+./cuda-s补全 accept
+config path:
+export PATH=$PATH:/usr/local/cuda/bin
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64
+alias python='/usr/bin/python3.5'
+
+1. cudnn7.4.2 install and default path:
+install:
+sudo dpkg -i libcudnn7_7.4.2.24-1+cuda10.0_amd64.deb
+sudo dpkg -i libcudnn7-dev_7.4.2.24-1+cuda10.0_amd64.deb
+
+Verifying cuDNN installation:
+
+cp -r /usr/src/cudnn_samples_v7/ $HOME
+cd  $HOME/cudnn_samples_v7/mnistCUDNN
+make clean && make
+./mnistCUDNN
+
+result: 
+
+rm -rf *o
+rm -rf mnistCUDNN
+/usr/local/cuda/bin/nvcc -ccbin g++ -I/usr/local/cuda/include -IFreeImage/include  -m64    -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_53,code=sm_53 -gencode arch=compute_53,code=compute_53 -o fp16_dev.o -c fp16_dev.cu
+g++ -I/usr/local/cuda/include -IFreeImage/include   -o fp16_emu.o -c fp16_emu.cpp
+g++ -I/usr/local/cuda/include -IFreeImage/include   -o mnistCUDNN.o -c mnistCUDNN.cpp
+/usr/local/cuda/bin/nvcc -ccbin g++   -m64      -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_53,code=sm_53 -gencode arch=compute_53,code=compute_53 -o mnistCUDNN fp16_dev.o fp16_emu.o mnistCUDNN.o -I/usr/local/cuda/include -IFreeImage/include  -LFreeImage/lib/linux/x86_64 -LFreeImage/lib/linux -lcudart -lcublas -lcudnn -lfreeimage -lstdc++ -lm
+aiteam@aiteam:~/cudnn_samples_v7/mnistCUDNN$ ./mnistCUDNN 
+cudnnGetVersion() : 7402 , CUDNN_VERSION from cudnn.h : 7402 (7.4.2)
+Host compiler version : GCC 5.4.0
+There are 2 CUDA capable devices on your machine :
+device 0 : sms 68  Capabilities 7.5, SmClock 1545.0 Mhz, MemSize (Mb) 10989, MemClock 7000.0 Mhz, Ecc=0, boardGroupID=0
+device 1 : sms 68  Capabilities 7.5, SmClock 1545.0 Mhz, MemSize (Mb) 10989, MemClock 7000.0 Mhz, Ecc=0, boardGroupID=1
+Using device 0
+
+Testing single precision
+Loading image data/one_28x28.pgm
+Performing forward propagation ...
+Testing cudnnGetConvolutionForwardAlgorithm ...
+Fastest algorithm is Algo 0
+Testing cudnnFindConvolutionForwardAlgorithm ...
+^^^^ CUDNN_STATUS_SUCCESS for Algo 0: 0.018432 time requiring 0 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 1: 0.053472 time requiring 3464 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 2: 0.062528 time requiring 57600 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 7: 0.063168 time requiring 2057744 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 4: 0.076288 time requiring 207360 memory
+Resulting weights from Softmax:
+0.0000000 0.9999399 0.0000000 0.0000000 0.0000561 0.0000000 0.0000012 0.0000017 0.0000010 0.0000000 
+Loading image data/three_28x28.pgm
+Performing forward propagation ...
+Resulting weights from Softmax:
+0.0000000 0.0000000 0.0000000 0.9999288 0.0000000 0.0000711 0.0000000 0.0000000 0.0000000 0.0000000 
+Loading image data/five_28x28.pgm
+Performing forward propagation ...
+Resulting weights from Softmax:
+0.0000000 0.0000008 0.0000000 0.0000002 0.0000000 0.9999820 0.0000154 0.0000000 0.0000012 0.0000006 
+
+Result of classification: 1 3 5
+
+Test passed!
+
+Testing half precision (math in single precision)
+Loading image data/one_28x28.pgm
+Performing forward propagation ...
+Testing cudnnGetConvolutionForwardAlgorithm ...
+Fastest algorithm is Algo 0
+Testing cudnnFindConvolutionForwardAlgorithm ...
+^^^^ CUDNN_STATUS_SUCCESS for Algo 0: 0.018080 time requiring 0 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 2: 0.037408 time requiring 28800 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 1: 0.042112 time requiring 3464 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 7: 0.053248 time requiring 2057744 memory
+^^^^ CUDNN_STATUS_SUCCESS for Algo 4: 0.060896 time requiring 207360 memory
+Resulting weights from Softmax:
+0.0000001 1.0000000 0.0000001 0.0000000 0.0000563 0.0000001 0.0000012 0.0000017 0.0000010 0.0000001 
+Loading image data/three_28x28.pgm
+Performing forward propagation ...
+Resulting weights from Softmax:
+0.0000000 0.0000000 0.0000000 1.0000000 0.0000000 0.0000714 0.0000000 0.0000000 0.0000000 0.0000000 
+Loading image data/five_28x28.pgm
+Performing forward propagation ...
+Resulting weights from Softmax:
+0.0000000 0.0000008 0.0000000 0.0000002 0.0000000 1.0000000 0.0000154 0.0000000 0.0000012 0.0000006 
+
+Result of classification: 1 3 5
+
+Test passed!
+
+
+default path:
+/usr/lib/x86_64-linux-gnu/
+
+2.python3 pip8.1 ->pip18 then cannot import:
+solution:
+
+/usr/bin/pip3
+from pip import __main__
+if __name__ == '__main__':
+    sys.exit(__main__._main())
+
+    
+3.installed nccl, nvidia-smi cannot use:
+solution:
+
+reinstall nvidia driver:
+./NVIDIA*.run --no-opengl-files
+
+
+4.bazel build error:
+ImportError: No module named numpy
+Is numpy installed?
+ and referenced by '//third_party/python_runtime:headers
+ 
+solution:
+
+--action_env python3.5
+5.nccl install: https://docs.nvidia.com/deeplearning/sdk/nccl-install-guide/index.html
+
+Installing NCCL
+In order to download NCCL, ensure you are registered for the NVIDIA Developer Program.
+
+Go to: NVIDIA NCCL home page.
+Click Download.
+Complete the short survey and click Submit.
+Accept the Terms and Conditions. A list of available download versions of NCCL displays.
+Select the NCCL version you want to install. A list of available resources displays. Refer to the following sections to choose the correct package depending on the Linux distribution you are using.
+
+Ubuntu 14.04 LTS And Ubuntu 16.04 LTS
+Installing NCCL on Ubuntu requires you to first add a repository to the APT system containing the NCCL packages, then installing the NCCL packages through APT. There are two repositories available; a local repository and a network repository. Choosing the later is recommended to easily retrieve upgrades when newer versions are posted.
+Install the repository.
+For the local NCCL repository:
+sudo dpkg -i nccl-repo-<version>.deb
+For the network repository:
+sudo dpkg -i nvidia-machine-learning-repo-<version>.deb
+Update the APT database:
+sudo apt update
+Install the libnccl2 package with APT. Additionally, if you need to compile applications with NCCL, you can install the libnccl-dev package as well:
+Note: If you are using the network repository, the following command will upgrade CUDA to the latest version.
+sudo apt install libnccl2 libnccl-dev
+If you prefer to keep an older version of CUDA, specify a specific version, for example:
+sudo apt-get install libnccl2=2.0.0-1+cuda8.0 libnccl-dev=2.0.0-1+cuda8.0
+Refer to the download page for exact package versions.
+
+
+6.build tensorflow ./config
+1)
+Found possible Python library paths:
+/usr/lib/python3/dist-packages
+
+cudnn7.4.2:
+/usr/lib/x86_64-linux-gnu/
+
+nccl 2.3.7
+/usr/lib/x86_64-linux-gnu/
+
+7. when nccl error :
+Traceback (most recent call last):
+  File "./configure.py", line 1693, in <module>
+    main()
+  File "./configure.py", line 1612, in main
+    set_tf_nccl_install_path(environ_cp)
+  File "./configure.py", line 1208, in set_tf_nccl_install_path
+    nccl_lib_path = os.path.join(nccl_install_path, nccl_lib_path)
+UnboundLocalError: local variable 'nccl_lib_path' referenced before assignment
+
+solution:
+Go to 5. to install nccl.
+8.
