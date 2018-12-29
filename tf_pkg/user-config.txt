@@ -1,0 +1,25 @@
+1. add user 
+sudo usermod -g aiteam chenglinlu
+
+sudo chown -R chenglinlu:aiteam /home/chenglinlu/
+
+2. samba:
+
+sudo gedit /etc/samba/smb.conf  
+append:
+
+[share]
+comment = Share Folder requirepassword
+browseable = yes
+path = /home/jobs/share
+create mask = 0777
+directory mask = 0777
+valid users = jobs
+force user = nobody
+force group = nogroup
+public = yes
+writable = yes
+available = yes
+
+sudo smbpasswd -a share 
+sudo service smbd restart

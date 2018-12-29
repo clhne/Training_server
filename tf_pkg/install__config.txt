@@ -91,6 +91,8 @@ Test passed!
 default path:
 /usr/lib/x86_64-linux-gnu/
 
+https://hk.saowen.com/a/a9cc5b7c90a6f350850d8554c018f7415981fc8d470b481c90afd7573f5e12cd
+
 2.python3 pip8.1 ->pip18 then cannot import:
 solution:
 
@@ -166,4 +168,16 @@ UnboundLocalError: local variable 'nccl_lib_path' referenced before assignment
 
 solution:
 Go to 5. to install nccl.
-8.
+8.when bazel build tensorflow error:
+AttributeError: '_NamespacePath' object has no attribute 'sort'
+solution:
+pip3 install --upgrade pip setuptools
+
+9.Bazel build:
+bazel build --action_env=/usr/bin/python3.5 --config=opt --config=cuda //tensorflow/tools/pip_package:build_pip_package
+10.path config:
+export PATH=$PATH:/usr/local/cuda/bin
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64
+alias python='/usr/bin/python3.5'
+export PATH=$PATH:/usr/local/bin
+export PYTHONPATH=$PYTHONPATH:/home/aiteam/.local/lib/python3.5/site-packages
