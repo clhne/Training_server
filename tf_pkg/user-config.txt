@@ -23,3 +23,22 @@ available = yes
 
 sudo smbpasswd -a share 
 sudo service smbd restart
+
+3.xrdp 远程桌面 Ubuntu16.04
+sudo apt-get install xrdp 
+sudo apt-get install vnc4server
+sudo apt-get install tightvncserver
+sudo apt-get install xubuntu-desktop
+
+service xrdp restart
+(reboot)
+若出现灰屏以及鼠标不显示或者显示为x的问题：
+a. ubuntu较低版本安装gnome ：apt-get install gnome
+b. 14.04远程不支持gnome版本，更换xface:
+sudo apt-get install xubuntu-desktop
+echo xfce4-session >~/.xsession
+vim /etc/xrdp/startwm.sh
+
+/etc/x11/Xsession前插入xfce4-session
+
+service xrdp restart
