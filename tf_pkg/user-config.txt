@@ -30,6 +30,17 @@ sudo apt-get install vnc4server
 sudo apt-get install tightvncserver
 sudo apt-get install xubuntu-desktop
 
+issue:
+win下退出后，重新登录出现login failed是因为win下虽然关闭了进程，但ubuntu下的xrdp进程并没有关闭，
+修改/etc/xrdp/sesman.ini
+
+[Sessions]
+X11DisplayOffset=10
+MaxSessions=50
+KillDisconnected=1
+IdleTimeLimit=0
+DisconnectedTimeLimit=0
+
 service xrdp restart
 (reboot)
 若出现灰屏以及鼠标不显示或者显示为x的问题：
